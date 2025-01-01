@@ -1,5 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv')
+const cors = require('cors');
+
 const connectDB = require('./config/database');
 const userRouter = require('./routes/userRouter');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
@@ -10,7 +12,18 @@ const messageRouter = require('./routes/messageRoutes');
 const app = express();
 
 dotenv.config();
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://chat-frontend-6wnq.onrender.com"
+];
+
 app.use(express.json());
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}
+));
 
 const PORT = process.env.PORT || 5000
 
@@ -36,7 +49,7 @@ const server = app.listen(PORT, () => {
 const io = require('socket.io')(server, {
     pingTimeout: 60 * 1000,
     cors: {
-        origin: ['http://localhost:5173', "https://chat-frontend-6wnq.onrender.com/"]
+        origin: allowedOrigins,
     },
 })
 
