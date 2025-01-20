@@ -46,6 +46,8 @@ const server = app.listen(PORT, () => {
     console.log(`successfully listening on port ${PORT} ....!`)
 })
 
+const onlineUsers = new Map(); // Key: User ID, Value: Socket ID(s)
+
 const io = require('socket.io')(server, {
     pingTimeout: 60 * 1000,
     cors: {
@@ -57,8 +59,11 @@ io.on('connection', (socket) => {
     console.log("connected to socket.io");
 
     socket.on("setup", (userData) => {
+        onlineUsers.set(userData._id, socket.id);
+        // console.log(onlineUsers);
         socket.join(userData._id);
         // console.log(userData);
+        io.emit('online-users', Array.from(onlineUsers.keys()));
         socket.emit('connected')
     })
 
@@ -90,6 +95,15 @@ io.on('connection', (socket) => {
             socket.in(user._id).emit("message received", newMessageReceived)
         })
     })
+
+    socket.on('disconnect', () => {
+        onlineUsers.forEach((value, key) => {
+            if (value === socket.id) {
+                onlineUsers.delete(key);
+            }
+        });
+        io.emit('online-users', Array.from(onlineUsers.keys())); // Broadcast updated online users
+    });
 
     socket.off('setup', () => {
         console.log("USER DISCONNECTED");
