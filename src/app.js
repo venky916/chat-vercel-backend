@@ -15,6 +15,9 @@ dotenv.config();
 const allowedOrigins = [
   'http://localhost:3000',
   'https://next-chat-blue-nu.vercel.app/',
+  ' next-chat-blue-nu.vercel.app',
+  'next-chat-git-main-venky916s-projects.vercel.app',
+  'next-chat-guthl0zge-venky916s-projects.vercel.app',
 ];
 
 app.use(express.json());
