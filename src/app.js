@@ -14,8 +14,6 @@ dotenv.config();
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:5173',
-  'https://chat-frontend-6wnq.onrender.com',
 ];
 
 app.use(express.json());
